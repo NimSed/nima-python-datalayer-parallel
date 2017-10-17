@@ -1,1 +1,1 @@
-# nima-python-datalayer-parallel
+A python data-layer for caffe, with support for parallel processes
