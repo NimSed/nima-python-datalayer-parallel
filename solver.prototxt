@@ -1,0 +1,8 @@
+net: "demo.prototxt"
+base_lr: 0
+gamma: 0
+momentum: 0
+display: 1
+max_iter: 1
+solver_mode: CPU
+solver_type: SGD
