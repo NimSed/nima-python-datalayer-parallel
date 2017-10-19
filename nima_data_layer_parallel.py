@@ -8,6 +8,9 @@ import multiprocessing
 from multiprocessing import Process, Queue
 import time
 
+
+from dummy_image_gen import dummy_image_gen
+
 def generator_daemon(q,initial_parent_id,image_gen):
 
     def check_pid(pid):        
@@ -57,12 +60,12 @@ class NimaParallelDataLayer(caffe.Layer):
         #--- Create the image_gen object(s)
         go_parallel = self.params.get("go_parallel",False);
         if not go_parallel:
-            self.image_generator = background_scene(self.params);
+            self.image_generator = dummy_image_gen();
         else:
             pool_size = multiprocessing.cpu_count()-1
             self.image_generators = [];
             for i in range(pool_size):
-                self.image_generators.append(background_scene(self.params));
+                self.image_generators.append(dummy_image_gen());
             
         #-- if parallel, start the image generator daemons
         if go_parallel:
@@ -89,7 +92,7 @@ class NimaParallelDataLayer(caffe.Layer):
             raise Exception('Number of tops for the nima_data_layer should be in range [1,7) !')
 
         for i in range(len(top)):
-            top[i].reshape(self.params["batch_size"],1,self.params["final_image_size"],self.params["final_image_size"])
+            top[i].reshape(self.params["batch_size"],1,self.params["h"],self.params["w"])
     
     def forward(self,bottom,top):
 
