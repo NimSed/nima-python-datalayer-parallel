@@ -94,16 +94,17 @@ class NimaParallelDataLayer(caffe.Layer):
     def forward(self,bottom,top):
 
         go_parallel = self.params.get("go_parallel",False);
+        batch_size = self.params["batch_size"];
 
         if go_parallel:
-            for i in range(self.params["batch_size"]):
+            for i in range(batch_size):
                 imgs = self.q.get()
                 for j in range(len(top)):
                     top[j].data[i,...] = imgs[j]
         else:
-            for i in range(self.params["batch_size"]):
+            for i in range(batch_size):
 
-                scene_counter = self.params["batch_size"] * self.internal_iter_count + i;
+                scene_counter = batch_size * self.internal_iter_count + i;
                 
                 imgs = self.background_scene.generate((scene_counter,None)) #let's pass the scene_counter instead of seed in non-parallel mode
                 for j in range(len(top)):
