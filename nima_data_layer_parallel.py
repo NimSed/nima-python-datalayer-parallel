@@ -57,12 +57,12 @@ class NimaParallelDataLayer(caffe.Layer):
         #--- Create the image_gen object(s)
         go_parallel = self.params.get("go_parallel",False);
         if not go_parallel:
-            self.background_scene = background_scene(self.params);
+            self.image_generator = background_scene(self.params);
         else:
             pool_size = multiprocessing.cpu_count()-1
-            self.background_scenes = [];
+            self.image_generators = [];
             for i in range(pool_size):
-                self.background_scenes.append(background_scene(self.params));
+                self.image_generators.append(background_scene(self.params));
             
         #-- if parallel, start the image generator daemons
         if go_parallel:
@@ -73,7 +73,7 @@ class NimaParallelDataLayer(caffe.Layer):
             from functools import partial
             g = partial(generator_daemon,self.q,os.getpid());
 
-            self.pool.map_async(g,[back_scene for back_scene in self.background_scenes])
+            self.pool.map_async(g,[back_scene for back_scene in self.image_generators])
 
         #-- we also have an internal iteration counter which is probably only useful in non-parallel mode
         self.internal_iter_count = 0;
@@ -106,7 +106,7 @@ class NimaParallelDataLayer(caffe.Layer):
 
                 scene_counter = batch_size * self.internal_iter_count + i;
                 
-                imgs = self.background_scene.generate((scene_counter,None)) #let's pass the scene_counter instead of seed in non-parallel mode
+                imgs = self.image_generator.generate((scene_counter,None)) #let's pass the scene_counter instead of seed in non-parallel mode
                 for j in range(len(top)):
                     top[j].data[i,...] = imgs[j]
 
