@@ -55,8 +55,8 @@ class NimaParallelDataLayer(caffe.Layer):
         self.params = eval(self.param_str)
 
         #--- Create the image_gen object(s)
-        real_parallel = self.params.get("real_parallel",False);
-        if not real_parallel:
+        go_parallel = self.params.get("go_parallel",False);
+        if not go_parallel:
             self.background_scene = background_scene(self.params);
         else:
             pool_size = multiprocessing.cpu_count()-1
@@ -65,7 +65,7 @@ class NimaParallelDataLayer(caffe.Layer):
                 self.background_scenes.append(background_scene(self.params));
             
         #-- if parallel, start the image generator daemons
-        if real_parallel:
+        if go_parallel:
             self.manager = multiprocessing.Manager()
             self.q = self.manager.Queue()
             self.pool = multiprocessing.Pool(pool_size);
@@ -93,9 +93,9 @@ class NimaParallelDataLayer(caffe.Layer):
     
     def forward(self,bottom,top):
 
-        real_parallel = self.params.get("real_parallel",False);
+        go_parallel = self.params.get("go_parallel",False);
 
-        if real_parallel:
+        if go_parallel:
             for i in range(self.params["batch_size"]):
                 imgs = self.q.get()
                 for j in range(len(top)):
