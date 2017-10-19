@@ -1,6 +1,6 @@
 net: "demo.prototxt"
 base_lr: 0
-gamma: 0
+lr_policy: "fixed"
 momentum: 0
 display: 1
 max_iter: 1
