@@ -5,6 +5,6 @@ layer {
   python_param {
 	module: "nima_data_layer_parallel";  #This should point to the python file, which should be 'visible' through PYTHON_PATH
 	layer: "NimaParallelDataLayer"; #This is the name of the python class
-	param_str: "{\"batch_size\":2,\"w\":100,\"h\":100}";
+	param_str: "{\"batch_size\":2,\"w\":2,\"h\":2}";
   }
 }
