@@ -60,12 +60,12 @@ class NimaParallelDataLayer(caffe.Layer):
         #--- Create the image_gen object(s)
         go_parallel = self.params.get("go_parallel",False);
         if not go_parallel:
-            self.image_generator = dummy_image_gen();
+            self.image_generator = dummy_image_gen(self.params);
         else:
             pool_size = multiprocessing.cpu_count()-1
             self.image_generators = [];
             for i in range(pool_size):
-                self.image_generators.append(dummy_image_gen());
+                self.image_generators.append(dummy_image_gen(self.params));
             
         #-- if parallel, start the image generator daemons
         if go_parallel:
